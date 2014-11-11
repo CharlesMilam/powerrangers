@@ -1,3 +1,22 @@
+# module for mixin use
+module Actions
+	def punch(person)
+		action = []
+		@caffeine_level -= 10
+		unless @strength > 5
+			action << "The #{@name} punches #{person.name}"
+			action << "#{person.scream}. #{person.run}."
+			person.caffeine_level -= 20
+		else
+			action << "The #{@name} punches #{person.name}"
+			action << "The mighty punch sends #{person.name} somersaulting into the air"
+			action << "#{person.scream}. #{person.run}."
+			person.caffeine_level -= 30
+		end
+		action.join(". ")
+	end
+end
+
 # a person, who has a name and a caffeine level, and
 # can perform certain actions
 class Person
@@ -51,80 +70,109 @@ class Person
 end
 
 class PowerRanger < Person
+	include Actions
+
 	def initialize(color, strength = 5)
-		super(@caffeine_level)
+		super(name)
 		@color = color
 		@strength = strength
-	end
-
-	def punch(person)
-		action = []
-		@caffeine_level -= 10
-		unless @strength > 5
-			action << "The #{@color} Power Ranger punches #{person.name}"
-			action << "#{person.scream}. #{person.run}."
-			person.caffeine_level -= 20
-		else
-			action << "The #{@color} Power Ranger punches #{person.name}"
-			action << "The mighty punch sends #{person.name} somersaulting into the air"
-			action << "#{person.scream}. #{person.run}."
-			person.caffeine_level -= 30
-		end
-		action.join(". ")
+		@name = color + " Power Ranger"
 	end
 
 	def rest
-		"The #{@color} Power Ranger rests."
+		"The #{@name} rests."
 	end
 
 	def use_megazord
-		"Uh, oh, looks like the #{@color} Power Ranger is using MEGAZORD, and you know what that means..."
+		"Uh, oh, looks like the #{@name} is using MEGAZORD, and you know what that means..."
 	end
 end
 
-class EvilNinja
+class EvilNinja < Person
+	include Actions
+
+	def initialize(evilness, strength = 5)
+		super(name)
+		@evilness = evilness
+		@strength = strength
+		@name = evilness + " Evil Ninja"
+	end
+
+	def cause_mayhem(person)
+		person.caffeine_level = 0
+		"Egads! The #{@name} is causing mayhem! #{person.name}'s caffeine level has been completely drained. Surely the end is nigh."
+	end
 end
 
-person1 = Person.new("Charles", 33)
-puts person1.run
-puts person1.scream
-puts person1.drink_coffee
-puts "************************************\n"
-puts person1.run
-puts person1.scream
-puts person1.drink_coffee
-puts "************************************\n"
-puts person1.run
-puts person1.scream
-puts person1.drink_coffee
-puts "************************************\n"
-puts person1.run
-puts person1.scream
-puts person1.drink_coffee
-puts "************************************\n"
-puts person1.run
-puts person1.scream
-puts person1.drink_coffee
-puts "************************************\n"
-puts person1.run
-puts person1.scream
-puts person1.drink_coffee
-puts "************************************\n"
-puts person1.run
-puts person1.scream
-puts person1.drink_coffee
-puts "************************************\n"
-puts person1.run
-puts person1.scream
-puts "************************************\n"
-pr1 = PowerRanger.new("Pink", 10)
-puts pr1.punch(person1)
-puts "************************************\n"
-puts pr1.punch(evil_minion1 = Person.new("Evil Minion One"))
-puts "************************************\n"
-puts pr1.use_megazord
-puts "************************************\n"
-puts pr1.punch(person1)
-puts pr1.punch(person1)
-puts pr1.punch(person1)
-puts "************************************\n"
+def fight_scene
+	innocent1 = Person.new("Innocent Bystander One", 35)
+	minion1 = Person.new("Evil Minion One", 10)
+	power1 = PowerRanger.new("Pink", 10)
+	power2 = PowerRanger.new("Blue", 3)
+	evil1 = EvilNinja.new("Monkey Death Punch", 7)
+	evil2 = EvilNinja.new("Dragon Fighting Stance", 1)
+
+	puts innocent1.drink_coffee
+	puts minion1.drink_coffee
+	puts power1.drink_coffee
+	puts evil2.drink_coffee
+
+	puts evil1.punch(innocent1)
+	puts evil2.punch(power2)
+	puts power1.punch(minion1)
+	puts power2.punch(evil2)
+
+	puts evil1.cause_mayhem(power1)
+	puts power1.use_megazord
+end
+
+
+# person1 = Person.new("Charles", 33)
+# puts person1.run
+# puts person1.scream
+# puts person1.drink_coffee
+# puts "************************************"
+# puts person1.run
+# puts person1.scream
+# puts person1.drink_coffee
+# puts "************************************"
+# puts person1.run
+# puts person1.scream
+# puts person1.drink_coffee
+# puts "************************************"
+# puts person1.run
+# puts person1.scream
+# puts person1.drink_coffee
+# puts "************************************"
+# puts person1.run
+# puts person1.scream
+# puts person1.drink_coffee
+# puts "************************************"
+# puts person1.run
+# puts person1.scream
+# puts person1.drink_coffee
+# puts "************************************"
+# puts person1.run
+# puts person1.scream
+# puts person1.drink_coffee
+# puts "************************************"
+# puts person1.run
+# puts person1.scream
+# puts "************************************"
+# pr1 = PowerRanger.new("Pink", 10)
+# puts pr1.name
+# puts pr1.punch(person1)
+# puts "************************************"
+# puts pr1.punch(evil_minion1 = Person.new("Evil Minion One"))
+# puts "************************************"
+# puts pr1.use_megazord
+# puts "************************************"
+# puts pr1.punch(person1)
+# puts pr1.punch(person1)
+# puts pr1.punch(person1)
+# puts "************************************"
+# en1 = EvilNinja.new("Monkey Death Punch")
+# puts en1.punch(person1)
+# puts en1.cause_mayhem(person1)
+puts "************************************"
+fight_scene
